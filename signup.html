@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a3161b4d26.js" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+<!-- Favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/ico">
+
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+    <title>WePay | Sign Up</title>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl" ng-init="showLogin=false">
+    <nav class="py-3">
+        <ul class="nav justify-content-end">
+            <li class="nav-item"><a href="index.php" class="nav-link">Home</a></li>
+            <li ng-click="viewLogin()" class="nav-item"><a href="" class="nav-link">Log in</a></li>
+            <li class="nav-item"><a href="" class="nav-link"><i class="fa-brands fa-instagram"></i></a></li>
+            <li class="nav-item"><a href="" class="nav-link"><i class="fa-brands fa-facebook-f"></i></a></li>
+            <li class="nav-item"><a href="" class="nav-link"><i class="fa-brands fa-linkedin-in"></i></a></li>
+            <li class="nav-item"><a href="" class="nav-link"><i class="fa-brands fa-twitter"></i></a></li>
+        </ul>
+    </nav>
+    <div class="login-page" id="loginPage" ng-show="showLogin">
+        <div class="login-form">
+            <span ng-click="crossLogin()" class="cross pointer">&times;</span>
+            <h2>Login<span> Here</span></h2>
+            <form name="inputform" ng-submit="login()" novalidate>
+                <input class="login-input" type="text" placeholder="Mobile number" spellcheck="false" ng-required="true" name="contact" ng-model="contact">
+                <input class="login-input" type="password" placeholder="Password" ng-required="true" name="password" ng-model="password">
+                <input type="submit" value="Log in" class="btn" ng-disabled="inputform.username.$error.required || inputform.password.$error.required">
+            </form>
+            <small class="pointer">Forgot password?</small>
+        </div>
+      </div>
+    <div class="register">
+        <div class="row"> 
+            <div class="col-md-5 image-col">
+                <img src="images/logo.png" class="main-img" alt="">
+            </div>
+            <div class="col-md-7 form-col">
+                <h1>Sign up</h1>
+                <form name="regform" novalidate>
+                    <i class="fa-solid fa-user"></i>
+                    <input class="register-input" type="text" placeholder="Your Name" spellcheck="false" ng-required="true" name="regname" ng-model="regname" ng-maxlength="20">
+                    <i class="fa-solid fa-phone"></i>
+                    <input class="register-input" id="contact" type="number" placeholder="Your Mobile Number" spellcheck="false" ng-required="true" name="regcontact" ng-model="regcontact" ng-minlength="10" ng-maxlength="10">
+                    <i class="fa-solid fa-lock"></i>
+                    <input class="register-input" type="password" placeholder="Password" ng-required="true" name="regpass1" ng-model="regpass1" ng-maxlength="20">
+                    <i class="fa-solid fa-lock"></i>
+                    <input class="register-input" type="password" placeholder="Repeat Password" ng-required="true" name="regpass2" ng-model="regpass2" compare-to="regpass1">
+                    <input type="submit" class="btn bg-theme register-btn" value="Register" ng-disabled="regform.regname.$error.required || regform.regname.$error.maxlength || regform.regpass1.$error.required || regform.regpass1.$error.maxlength || regform.regpass2.$error.required || regform.regcontact.$error.required || regform.regcontact.$error.minlength || regform.regcontact.$error.maxlength || regform.regpass2.$error.compareTo" ng-click="register()">
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope,$http) {
+            $scope.viewLogin = function() {
+                $scope.showLogin = true;
+            }
+            $scope.login = function() {
+                var xmlhttp=new XMLHttpRequest();
+                xmlhttp.onreadystatechange=function() {
+                    if (this.readyState==4 && this.status==200) {
+                        if (this.responseText=="success") {
+                        window.location = "groups.php";
+                        } else {
+                        alert(this.responseText);
+                        }
+                    }
+                }
+                xmlhttp.open("GET","login.php?contact="+$scope.contact+"&pwd="+$scope.password,true);
+                xmlhttp.send();
+            }
+            $scope.crossLogin = function () {
+                $scope.showLogin = false;
+            }
+            $scope.register = function() {
+                var xmlhttp=new XMLHttpRequest();
+                xmlhttp.onreadystatechange=function() {
+                    if (this.readyState==4 && this.status==200) {
+                        if (this.responseText=="success") {
+                            window.location = "groups.php";
+                        } else {
+                            alert("Contact number is already registered. Please register using a different number or login to continue.");
+                        }
+                    }
+                }
+                xmlhttp.open("GET","register.php?name="+$scope.regname+"&contact="+$scope.regcontact+"&pwd="+$scope.regpass1,true);
+                xmlhttp.send();
+            }
+        });
+        app.directive("compareTo", function ()  
+        {  
+            return {  
+                require: "ngModel",  
+                scope:  
+                {  
+                    confirmPassword: "=compareTo"  
+                },  
+                link: function (scope, element, attributes, modelVal)  
+                {  
+                    modelVal.$validators.compareTo = function (val)  
+                    {  
+                        return val == scope.confirmPassword;  
+                    };  
+                    scope.$watch("confirmPassword", function ()  
+                    {  
+                        modelVal.$validate();  
+                    });  
+                }  
+            };  
+        });
+    </script>
+
+    </body>
+</html>
